@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Unipi Audio Stories</string>
+    <string name="header_title">Audio Stories</string>
 </resources>

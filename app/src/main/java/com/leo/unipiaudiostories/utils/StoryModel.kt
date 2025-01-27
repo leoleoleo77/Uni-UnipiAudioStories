@@ -1,7 +1,7 @@
 package com.leo.unipiaudiostories.utils
 
 class StoryModel {
-    val id: Int? = null
+    var id: String = ""
     val author: String? = null
     val year: String? = null
     val title: String? = null

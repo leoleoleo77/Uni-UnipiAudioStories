@@ -1,6 +1,5 @@
 package com.leo.unipiaudiostories
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,11 +17,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,23 +29,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.google.firebase.firestore.FirebaseFirestore
 import com.leo.unipiaudiostories.utils.AppConstants
-import com.leo.unipiaudiostories.utils.DataAgent
+import com.leo.unipiaudiostories.utils.DataManager
+import com.leo.unipiaudiostories.utils.StatsManager
 import com.leo.unipiaudiostories.utils.StoryModel
 
 @Composable
 fun HomeView() {
-    val dataBase = DataAgent()
+    val dataBase = DataManager()
+    val stats = StatsManager(LocalContext.current)
     val storiesList = remember { mutableStateOf<List<StoryModel>>(emptyList()) }
     val homeState = remember { mutableStateOf(AppConstants.STATE_HOME) }
     val selectedStory = remember { mutableStateOf<StoryModel?>(null) }
@@ -61,32 +55,38 @@ fun HomeView() {
         storiesList.value = fetchedStories // Update the state
     }
 
-    if (homeState.value == AppConstants.STATE_HOME) {
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .background(color = MaterialTheme.colorScheme.secondary)
-                .statusBarsPadding()
-        ) {
-            Header()
-            storiesList.value.forEach { story ->
-                Story(
-                    storyModel = story,
-                    selectedStory = selectedStory,
-                    homeState= homeState)
+    when (homeState.value) {
+        AppConstants.STATE_HOME -> {
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .background(color = MaterialTheme.colorScheme.secondary)
+                    .statusBarsPadding()
+            ) {
+                Header(homeState)
+                storiesList.value.forEach { story ->
+                    Story(
+                        storyModel = story,
+                        selectedStory = selectedStory,
+                        homeState= homeState)
+                }
             }
         }
-    } else if (homeState.value == AppConstants.STATE_STORY) {
-        selectedStory.value?.let {
-            StoryView(it, homeState)
+        AppConstants.STATE_STORY -> {
+            selectedStory.value?.let {
+                StoryView(it, homeState)
+            }
+        }
+        else -> {
+            StatsView()
         }
     }
 }
 
 @Composable
 private fun Header(
-    //homeState: MutableState<String>,
+    homeState: MutableState<String>,
 ) {
     Row (
         modifier = Modifier
@@ -105,9 +105,9 @@ private fun Header(
         Box (
             modifier = Modifier
                 //.align(Alignment.Bottom)
-//                .clickable {
-//                    homeState.value = AppConstants.NAVIGATION_PROFILE_DETAILS
-//                }
+                .clickable {
+                    homeState.value = AppConstants.STATE_STATS
+                }
         ) {
             Image(
                 modifier = Modifier

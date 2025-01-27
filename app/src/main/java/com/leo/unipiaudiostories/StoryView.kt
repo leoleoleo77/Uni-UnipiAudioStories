@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -28,11 +32,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.leo.unipiaudiostories.utils.AppConstants
 import com.leo.unipiaudiostories.utils.StoryModel
 import java.util.Locale
@@ -50,9 +57,17 @@ fun StoryView(
             .statusBarsPadding()
     ) {
         Header(story, homeState)
+        AsyncImage(
+            model = story.image,
+            contentDescription = null,
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .fillMaxWidth())
         StoryContainer(story.story ?: "")
     }
-    FloatingPlayButton()
+    FloatingPlayButton(story.story ?: "")
 }
 
 @Composable
@@ -64,8 +79,7 @@ private fun Header(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(horizontal = 8.dp, vertical = 16.dp),
-        //verticalAlignment = Alignment.Bottom,
+            .padding(start = 8.dp, end = 8.dp, top = 24.dp),
         horizontalArrangement = Arrangement.Start,
     ) {
         Box (
@@ -107,7 +121,7 @@ fun StoryContainer(content: String) {
 }
 
 @Composable
-fun FloatingPlayButton() {
+fun FloatingPlayButton(content: String) {
     val context = LocalContext.current
     var tts: TextToSpeech? = remember { null } // Remember the TTS instance
 
@@ -135,17 +149,30 @@ fun FloatingPlayButton() {
     ) {
         FloatingActionButton(
             onClick = {
-                // Speak the text when the button is clicked
-                tts?.speak("Hello! This is text-to-speech in action.", TextToSpeech.QUEUE_FLUSH, null, null)
+                if (tts?.isSpeaking == true) {
+                    tts?.stop()
+                } else {
+                    tts?.speak(content, TextToSpeech.QUEUE_FLUSH, null, null)
+                }
             },
             modifier = Modifier.align(Alignment.BottomEnd),
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow, // Volume icon
-                contentDescription = "Speak",
-                tint = Color.White
-            )
+            if (tts?.isSpeaking == true) {
+                Box(
+                    Modifier.apply {
+                        width(20.dp)
+                        height(20.dp)
+                        Color.White
+                    }
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Speak",
+                    tint = Color.White
+                )
+            }
         }
     }
 }

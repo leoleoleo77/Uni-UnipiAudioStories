@@ -44,6 +44,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     displayMedium = TextStyle(
+        fontFamily = comicSansFontFamily,
         fontSize = 24.sp,
         lineHeight = 30.sp,
     ),

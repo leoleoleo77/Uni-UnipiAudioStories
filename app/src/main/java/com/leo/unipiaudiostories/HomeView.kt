@@ -52,7 +52,8 @@ fun HomeView() {
 
     LaunchedEffect(Unit) {
         val fetchedStories = dataBase.getStoriesList()
-        storiesList.value = fetchedStories // Update the state
+        storiesList.value = fetchedStories
+        stats.initializeStoriesStats(fetchedStories)
     }
 
     when (homeState.value) {
@@ -79,7 +80,7 @@ fun HomeView() {
             }
         }
         else -> {
-            StatsView()
+            DetailsView(stats, homeState)
         }
     }
 }

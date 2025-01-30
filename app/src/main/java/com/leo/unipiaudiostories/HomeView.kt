@@ -41,9 +41,10 @@ import com.leo.unipiaudiostories.utils.AppConstants
 import com.leo.unipiaudiostories.utils.DataManager
 import com.leo.unipiaudiostories.utils.StatsManager
 import com.leo.unipiaudiostories.utils.StoryModel
+import java.util.Locale
 
 @Composable
-fun HomeView() {
+fun HomeView(updateAppLocale: (Locale) -> Unit) {
     val dataBase = DataManager()
     val stats = StatsManager(LocalContext.current)
     val storiesList = remember { mutableStateOf<List<StoryModel>>(emptyList()) }
@@ -76,11 +77,11 @@ fun HomeView() {
         }
         AppConstants.STATE_STORY -> {
             selectedStory.value?.let {
-                StoryView(it, homeState)
+                StoryView(it, stats, homeState)
             }
         }
         else -> {
-            DetailsView(stats, homeState)
+            DetailsView(stats, homeState, updateAppLocale)
         }
     }
 }

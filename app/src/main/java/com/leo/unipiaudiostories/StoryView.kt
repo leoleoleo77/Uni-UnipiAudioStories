@@ -41,12 +41,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.leo.unipiaudiostories.utils.AppConstants
+import com.leo.unipiaudiostories.utils.StatsManager
 import com.leo.unipiaudiostories.utils.StoryModel
 import java.util.Locale
 
 @Composable
 fun StoryView(
     story: StoryModel,
+    stats: StatsManager,
     homeState: MutableState<String>
 ) {
     Column (
@@ -67,9 +69,8 @@ fun StoryView(
                 .fillMaxWidth())
         StoryContainer(story.story ?: "")
     }
-    FloatingPlayButton(story.story ?: "")
+    FloatingPlayButton(story, stats)
 }
-
 @Composable
 private fun Header(
     story: StoryModel,
@@ -114,14 +115,14 @@ private fun Header(
 @Composable
 fun StoryContainer(content: String) {
     Text(
-        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 92.dp),
+        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 92.dp),
         text = content,
-        style = MaterialTheme.typography.displayMedium
+        style = MaterialTheme.typography.displayLarge
     )
 }
 
 @Composable
-fun FloatingPlayButton(content: String) {
+fun FloatingPlayButton(story: StoryModel, stats: StatsManager) {
     val context = LocalContext.current
     var tts: TextToSpeech? = remember { null } // Remember the TTS instance
 
@@ -150,9 +151,10 @@ fun FloatingPlayButton(content: String) {
         FloatingActionButton(
             onClick = {
                 if (tts?.isSpeaking == true) {
-                    tts?.stop()
+                    // tts?.stop()
                 } else {
-                    tts?.speak(content, TextToSpeech.QUEUE_FLUSH, null, null)
+                    stats.incrementReadCount(story.id)
+                    // tts?.speak(story.story, TextToSpeech.QUEUE_FLUSH, null, null)
                 }
             },
             modifier = Modifier.align(Alignment.BottomEnd),

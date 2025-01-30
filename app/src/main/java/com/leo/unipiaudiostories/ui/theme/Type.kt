@@ -48,6 +48,11 @@ val Typography = Typography(
         fontSize = 24.sp,
         lineHeight = 30.sp,
     ),
+    displayLarge = TextStyle(
+        fontFamily = FontFamily.Serif,
+        fontSize = 24.sp,
+        lineHeight = 30.sp,
+    ),
     /*
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,

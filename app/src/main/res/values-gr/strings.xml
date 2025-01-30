@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">UnipiPLIShopping</string>
-    <string name="header_title">Audio Stories</string>
-    <string name="stats_header_title">Details</string>
-    <string name="times_heard">Times heard each story</string>
-    <string name="settings">Settings</string>
-
+    <string name="header_title">Ηχο-Ιστορίες</string>
+    <string name="stats_header_title">Λεπτομέρειες</string>
+    <string name="times_heard">Φορές που ακούστηκε κάθε ιστορία</string>
+    <string name="settings">Ρυθμίσεις</string>
+    <string name="language_label">Γλώσσα:</string>
+    <string name="english_label">English</string>
+    <string name="greek_label">Greek</string>
+    <string name="french_label">French</string>
 </resources>

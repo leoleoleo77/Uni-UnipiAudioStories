@@ -1,5 +1,6 @@
 package com.leo.unipiaudiostories
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +38,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.leo.unipiaudiostories.utils.AppConstants
 import com.leo.unipiaudiostories.utils.DataManager
 import com.leo.unipiaudiostories.utils.StatsManager
@@ -130,6 +136,9 @@ private fun Story(
     selectedStory: MutableState<StoryModel?>,
     homeState: MutableState<String>,
 ) {
+    val context = LocalContext.current
+
+
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -139,7 +148,6 @@ private fun Story(
                 selectedStory.value = storyModel
             }
     ) {
-        // Background image
         AsyncImage(
             model = storyModel.image,
             contentDescription = null,

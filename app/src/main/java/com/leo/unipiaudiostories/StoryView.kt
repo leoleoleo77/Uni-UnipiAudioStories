@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -29,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -125,6 +128,9 @@ fun StoryContainer(content: String) {
 fun FloatingPlayButton(story: StoryModel, stats: StatsManager) {
     val context = LocalContext.current
     var tts: TextToSpeech? = remember { null } // Remember the TTS instance
+    val isSpeaking = remember {
+        mutableStateOf(false)
+    }
 
     // Initialize TextToSpeech
     LaunchedEffect(Unit) {
@@ -150,31 +156,25 @@ fun FloatingPlayButton(story: StoryModel, stats: StatsManager) {
     ) {
         FloatingActionButton(
             onClick = {
-                if (tts?.isSpeaking == true) {
-                    // tts?.stop()
+                if (isSpeaking.value) {
+                    tts?.stop()
                 } else {
                     stats.incrementReadCount(story.id)
-                    // tts?.speak(story.story, TextToSpeech.QUEUE_FLUSH, null, null)
+                    tts?.speak(story.story, TextToSpeech.QUEUE_FLUSH, null, null)
                 }
+                isSpeaking.value = !isSpeaking.value
             },
             modifier = Modifier.align(Alignment.BottomEnd),
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            if (tts?.isSpeaking == true) {
-                Box(
-                    Modifier.apply {
-                        width(20.dp)
-                        height(20.dp)
-                        Color.White
-                    }
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Speak",
-                    tint = Color.White
-                )
-            }
+            Icon(
+                imageVector = when (isSpeaking.value) {
+                    true -> Icons.Default.Mic
+                    false -> Icons.Default.MicOff
+                },
+                contentDescription = "Speak",
+                tint = Color.White
+            )
         }
     }
 }

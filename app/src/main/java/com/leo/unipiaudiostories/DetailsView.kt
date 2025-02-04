@@ -1,6 +1,5 @@
 package com.leo.unipiaudiostories
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,13 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.leo.unipiaudiostories.utils.AppConstants
 import com.leo.unipiaudiostories.utils.StatsManager
-import com.leo.unipiaudiostories.utils.StoryModel
 import java.util.Locale
 
 @Composable
@@ -77,7 +74,6 @@ private fun Header(homeState: MutableState<String>) {
         ) {
             Icon(
                 modifier = Modifier
-                    //.padding(end = 8.dp, bottom = 4.dp)
                     .size(48.dp)
                     .graphicsLayer {
                         rotationZ = -90f // Rotate the arrow 90 degrees counterclockwise
